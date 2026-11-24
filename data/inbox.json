@@ -1,0 +1,42 @@
+[
+  {
+    "id": "email-001",
+    "from": "priya.nair@northwind.test",
+    "to": "you@northwind.test",
+    "date": "2026-10-26T09:12:00Z",
+    "subject": "Q4 planning meeting - can we move it?",
+    "body": "Hi, I have a conflict on Thursday at 2pm. Could we move the Q4 planning meeting to Friday at 11am instead? We need about an hour, and Sam will join to go over the budget. Let me know by Wednesday so I can update the invite.\n\nThanks,\nPriya"
+  },
+  {
+    "id": "email-002",
+    "from": "billing@cloudhost.test",
+    "to": "you@northwind.test",
+    "date": "2026-10-27T06:30:00Z",
+    "subject": "Invoice INV-20418 is due November 10",
+    "body": "Your invoice INV-20418 for October hosting is now available.\n\nAmount due: $1,248.60\nDue date: November 10, 2026\n\nThis is about 12% higher than last month because of additional storage use. Contact billing@cloudhost.test with any questions."
+  },
+  {
+    "id": "email-003",
+    "from": "daniel.okafor@brightpath.test",
+    "to": "you@northwind.test",
+    "date": "2026-10-27T15:47:00Z",
+    "subject": "Refund request for order #58213",
+    "body": "Hello, I ordered the annual plan on October 20 and it doesn't have the reporting feature your sales team described. I've been a customer for two years and this is really disappointing. I'd like a full refund for order #58213. Please confirm how long this will take.\n\nDaniel Okafor"
+  },
+  {
+    "id": "email-004",
+    "from": "newsletter@devweekly.test",
+    "to": "you@northwind.test",
+    "date": "2026-10-28T08:00:00Z",
+    "subject": "Dev Weekly: faster test suites and a database migration story",
+    "body": "This week: how one team cut CI time in half, lessons from a zero-downtime database migration, and five small habits for better code reviews. Read the full issue on our website. You're receiving this because you subscribed to Dev Weekly."
+  },
+  {
+    "id": "email-005",
+    "from": "sam.torres@northwind.test",
+    "to": "you@northwind.test",
+    "date": "2026-10-29T11:05:00Z",
+    "subject": "Quick question about the new-hire guide",
+    "body": "Hey, we have two engineers starting on Monday. Is the onboarding doc still accurate, especially the laptop setup section? If it's out of date, can you send me whatever is current before Friday?\n\nSam"
+  }
+]

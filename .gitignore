@@ -12,3 +12,7 @@ wheels/
 # Secrets
 .env
 .env.*
+
+# Generated output
+sent.log
+.ruff_cache/
