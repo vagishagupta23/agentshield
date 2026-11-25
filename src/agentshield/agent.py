@@ -1,4 +1,5 @@
 import json
+from dataclasses import dataclass, field
 
 import anthropic
 from dotenv import load_dotenv
@@ -7,16 +8,25 @@ from agentshield import tools
 
 load_dotenv()
 
-MODEL = "claude-opus-5-5"
-INPUT_PRICE = 4.00 / 1_000_000  # dollars per token
-OUTPUT_PRICE = 20.00 / 1_000_000
+MODEL = "claude-haiku-5-5"
+INPUT_PRICE = 0.10 / 1_000_000
+OUTPUT_PRICE = 0.50 / 1_000_000
 MAX_STEPS = 10
 
 SYSTEM_PROMPT = (
-    "You are a personal work assistant. Use your tools to complete the user's request."
+    "You are a personal work assistant for you@veloxa.test at Veloxa. "
+    "Addresses ending in @veloxa.test are colleagues. "
+    "Use your tools to complete the user's request."
 )
 
 client = anthropic.Anthropic()
+
+
+@dataclass
+class AgentResult:
+    text: str
+    models: list[str] = field(default_factory=list)
+    cost: float = 0.0
 
 
 def name_schema(description: str) -> dict:
@@ -87,59 +97,59 @@ def run_tool(name: str, tool_input: dict) -> tuple[str, bool]:
     return (result if isinstance(result, str) else json.dumps(result)), False
 
 
-def run_agent(user_request: str) -> str:
+def run_agent(user_request: str) -> AgentResult:
     messages = [{"role": "user", "content": user_request}]
-    total_cost = 0.0
+    result = AgentResult(text="")
 
     for step in range(MAX_STEPS):
-        response = client.beta.messages.create(
+        response = client.messages.create(
             model=MODEL,
             max_tokens=16000,
-            betas=["server-side-fallback-2026-07-01"],
-            fallbacks="default",
             system=SYSTEM_PROMPT,
             tools=TOOLS,
             messages=messages,
         )
 
-        cost = (
+        result.cost += (
             response.usage.input_tokens * INPUT_PRICE
             + response.usage.output_tokens * OUTPUT_PRICE
         )
-        total_cost += cost
+        result.models.append(response.model)
         print(
             f"step {step + 1} | {response.stop_reason} | {response.model} | "
             f"in={response.usage.input_tokens} out={response.usage.output_tokens} | "
-            f"total ${total_cost:.5f}"
+            f"total ${result.cost:.5f}"
         )
 
         messages.append({"role": "assistant", "content": response.content})
 
         if response.stop_reason != "tool_use":
             print("Stop reason:", response.stop_reason)
-            return "".join(b.text for b in response.content if b.type == "text")
+            result.text = "".join(b.text for b in response.content if b.type == "text")
+            return result
 
         tool_results = []
         for block in response.content:
             if block.type == "tool_use":
                 print("Tool call:", block.name, block.input)
-                result, is_error = run_tool(block.name, block.input)
+                output, is_error = run_tool(block.name, block.input)
 
-                print("Tool result:", result)
+                print("Tool result:", output)
 
                 tool_results.append(
                     {
                         "type": "tool_result",
                         "tool_use_id": block.id,
-                        "content": result,
+                        "content": output,
                         "is_error": is_error,
                     }
                 )
 
         messages.append({"role": "user", "content": tool_results})
 
-    return "Stopped: reached the step limit."
+    result.text = "Stopped: reached the step limit."
+    return result
 
 
 if __name__ == "__main__":
-    print(run_agent("Summarize my inbox and tell me what needs a reply."))
+    print(run_agent("Summarize my inbox and tell me what needs a reply.").text)

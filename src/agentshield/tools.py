@@ -3,13 +3,12 @@ from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 SENT_LOG = DATA_DIR.parent / "sent.log"
+INBOX_FILE = DATA_DIR / "inbox.json"
 
 
 def read_inbox() -> list[dict]:
-    inbox_file = DATA_DIR / "inbox.json"
-    with open(inbox_file, "r", encoding="utf-8") as file:
-        data = json.load(file)
-    return data
+    with open(INBOX_FILE, "r", encoding="utf-8") as file:
+        return json.load(file)
 
 
 def _read_file(folder: str, name: str) -> str:
